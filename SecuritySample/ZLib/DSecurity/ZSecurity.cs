@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+// add
+using System.Security.Cryptography;
+using System.Diagnostics;
 
 namespace ZLib.DSecurity
 {
-    class ZSecurity
+    public static class ZSecurity
     {
     }
 }

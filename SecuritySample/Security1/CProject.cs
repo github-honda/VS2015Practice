@@ -25,10 +25,10 @@ namespace Security1
         public void Run()
         {
             // remove comment for test:
-            new SampleRSAMS().Run();
-            //new SampleRSA().Run();
+            //new SampleRSAMS().Run();
+            new SampleRSA().Run();
 
-            Console.WriteLine("End.");
+            Console.WriteLine("Press any key to end.");
             Console.ReadKey();
         }
     }

@@ -32,12 +32,6 @@ namespace Security1
                 //public and private key data.
                 using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
                 {
-                    // 20190321, RSACryptoServiceProvider Info:
-                    // CspKeyContainerInfo.ProviderName = "Microsoft Enhanced RSA and AES Cryptographic Provider"
-                    // KeyExchangeAlgorithm = "RSA-PKCS1-KeyEx"
-                    // SignatureAlgorithm = "http://www.w3.org/2000/09/xmldsig#rsa-sha1"
-
-
                     //Pass the data to ENCRYPT, the public key information 
                     //(using RSACryptoServiceProvider.ExportParameters(false),
                     //and a boolean flag specifying no OAEP padding.

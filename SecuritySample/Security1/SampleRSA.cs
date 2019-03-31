@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 // add
 using System.Security.Cryptography;
+using System.Diagnostics;
+using ZLib.DSecurity;
 
 namespace Security1
 {
@@ -12,102 +14,103 @@ namespace Security1
     {
         public void Run()
         {
-            try
+            UTF8Encoding UTF8Converter = new UTF8Encoding();
+
+            Console.WriteLine($"1. 建立金鑰: AB雙方各自產生一組成對的(公鑰及私鑰).");
+            string sContainer_A = "A";
+            string sContainer_B = "B";
+            if (!ZRSA.CreateContainer(sContainer_A))
             {
-                //Create a UnicodeEncoder to convert between byte array and string.
-                UnicodeEncoding ByteConverter = new UnicodeEncoding();
-
-                //Create byte arrays to hold original, encrypted, and decrypted data.
-                byte[] dataToEncrypt = ByteConverter.GetBytes("Data to Encrypt");
-                byte[] encryptedData;
-                byte[] decryptedData;
-
-                //Create a new instance of RSACryptoServiceProvider to generate
-                //public and private key data.
-                using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
-                {
-
-                    //Pass the data to ENCRYPT, the public key information 
-                    //(using RSACryptoServiceProvider.ExportParameters(false),
-                    //and a boolean flag specifying no OAEP padding.
-                    encryptedData = RSAEncrypt(dataToEncrypt, RSA.ExportParameters(false), false);
-
-                    //Pass the data to DECRYPT, the private key information 
-                    //(using RSACryptoServiceProvider.ExportParameters(true),
-                    //and a boolean flag specifying no OAEP padding.
-                    decryptedData = RSADecrypt(encryptedData, RSA.ExportParameters(true), false);
-
-                    //Display the decrypted plaintext to the console. 
-                    Console.WriteLine("Decrypted plaintext: {0}", ByteConverter.GetString(decryptedData));
-                }
+                Console.WriteLine(ZRSA.msError);
+                return;
             }
-            catch (ArgumentNullException)
+            if (!ZRSA.CreateContainer(sContainer_B))
             {
-                //Catch this exception in case the encryption did
-                //not succeed.
-                Console.WriteLine("Encryption failed.");
-
+                Console.WriteLine(ZRSA.msError);
+                return;
             }
-        }
+            Console.WriteLine($"{sContainer_A} = {ZRSA.ExistingContainer(sContainer_A)}, {ZRSA.GetContainerFileFullName(sContainer_A)}");
+            Console.WriteLine($"{sContainer_B} = {ZRSA.ExistingContainer(sContainer_B)}, {ZRSA.GetContainerFileFullName(sContainer_B)}");
+            Console.WriteLine();
 
-        public byte[] RSAEncrypt(byte[] DataToEncrypt, RSAParameters RSAKeyInfo, bool DoOAEPPadding)
-        {
-            try
+            Console.WriteLine($"2. 取得公鑰: A取得(B的公鑰), 並確保(B的公鑰)是來自於B.");
+            string sPublicKeyXML_B = ZRSA.GetPublicKey(sContainer_B);
+            if (string.IsNullOrEmpty(sPublicKeyXML_B))
             {
-                byte[] encryptedData;
-                //Create a new instance of RSACryptoServiceProvider.
-                using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
-                {
-
-                    //Import the RSA Key information. This only needs
-                    //toinclude the public key information.
-                    RSA.ImportParameters(RSAKeyInfo);
-
-                    //Encrypt the passed byte array and specify OAEP padding.  
-                    //OAEP padding is only available on Microsoft Windows XP or
-                    //later.  
-                    encryptedData = RSA.Encrypt(DataToEncrypt, DoOAEPPadding);
-                }
-                return encryptedData;
+                Console.WriteLine(ZRSA.msError);
+                return;
             }
-            //Catch and display a CryptographicException  
-            //to the console.
-            catch (CryptographicException e)
+            Console.WriteLine($"(B的公鑰) = {sPublicKeyXML_B.Length}, {sPublicKeyXML_B}");
+            Console.WriteLine();
+
+            Console.WriteLine($"3. 加密原文: A利用(B的公鑰), 加密(原文)後, 產生(加密訊息).");
+            string sPlainText = "123, 到台灣, 台灣有個阿里山. ~!@#$%^&*()<>{}[]:;\"'＊％！＃\\/ABCD.";
+            byte[] baPlainText = UTF8Converter.GetBytes(sPlainText);
+            byte[] baEncrypt = ZRSA.Encrypt(baPlainText, sPublicKeyXML_B);
+            if (baEncrypt == null)
             {
-                Console.WriteLine(e.Message);
-
-                return null;
+                Console.WriteLine(ZRSA.msError);
+                return;
             }
+            Console.WriteLine($"原文: {UTF8Converter.GetByteCount(sPlainText)}, {sPlainText}");
+            Console.WriteLine($"密文: {baEncrypt.Length}, {BitConverter.ToString(baEncrypt)}");
+            Console.WriteLine();
 
-        }
-
-        public byte[] RSADecrypt(byte[] DataToDecrypt, RSAParameters RSAKeyInfo, bool DoOAEPPadding)
-        {
-            try
+            Console.WriteLine($"4. 製作簽章: A利用(A的私鑰), 簽章(原文)後, 產生(簽章訊息).");
+            string sPrivateKeyXML_A = ZRSA.GetPrivateKey(sContainer_A);
+            byte[] baSignatureUTF8 = ZRSA.SignDataSHA1(baPlainText, sPrivateKeyXML_A);
+            if (baSignatureUTF8 == null)
             {
-                byte[] decryptedData;
-                //Create a new instance of RSACryptoServiceProvider.
-                using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
-                {
-                    //Import the RSA Key information. This needs
-                    //to include the private key information.
-                    RSA.ImportParameters(RSAKeyInfo);
-
-                    //Decrypt the passed byte array and specify OAEP padding.  
-                    //OAEP padding is only available on Microsoft Windows XP or
-                    //later.  
-                    decryptedData = RSA.Decrypt(DataToDecrypt, DoOAEPPadding);
-                }
-                return decryptedData;
+                Console.WriteLine(ZRSA.msError);
+                return;
             }
-            //Catch and display a CryptographicException  
-            //to the console.
-            catch (CryptographicException e)
+            Console.WriteLine($"簽章: {baSignatureUTF8.Length}, {BitConverter.ToString(baSignatureUTF8)}");
+            Console.WriteLine();
+
+            Console.WriteLine($"5. 傳送訊息: B取得(A的公鑰), (加密訊息), (簽章訊息).");
+            string sPublicKeyXML_A = ZRSA.GetPublicKey(sContainer_A);
+            if (string.IsNullOrEmpty(sPublicKeyXML_A))
             {
-                Console.WriteLine(e.ToString());
-
-                return null;
+                Console.WriteLine(ZRSA.msError);
+                return;
             }
+            Console.WriteLine($"(A的公鑰) = {sPublicKeyXML_A.Length}, {sPublicKeyXML_A}");
+            Console.WriteLine();
+
+            Console.WriteLine($"6. 解密訊息: B利用(B的私鑰), 解密(加密訊息), 取得(原文).");
+            string sPrivateKeyXML_B = ZRSA.GetPrivateKey(sContainer_B);
+            if (string.IsNullOrEmpty(sPrivateKeyXML_B))
+            {
+                Console.WriteLine(ZRSA.msError);
+                return;
+            }
+            Console.WriteLine($"(B的私鑰) = {sPrivateKeyXML_B.Length}, {sPrivateKeyXML_B}");
+
+            byte[] baDecrypt = ZRSA.Decrypt(baEncrypt, sPrivateKeyXML_B);
+            if (baDecrypt == null)
+            {
+                Console.WriteLine(ZRSA.msError);
+                return;
+            }
+            string sDecrypt = UTF8Converter.GetString(baDecrypt);
+            Console.WriteLine($"解密訊息 = {baDecrypt.Length}, {sDecrypt}");
+            Console.WriteLine($"解密結果 = {sDecrypt == sPlainText}.");
+            Console.WriteLine();
+
+            Console.WriteLine($"7. 驗證簽章: B取得(A的公鑰), 驗證(簽章訊息), 確定(加密訊息)沒有被竄改..");
+            Console.WriteLine($"驗證簽章 = {ZRSA.VerifyDataSHA1(baDecrypt, sPublicKeyXML_A, baSignatureUTF8)}.");
+            Console.WriteLine();
+
+            Console.WriteLine($"刪除金鑰: 刪除存放在本機的金鑰.");
+            if (ZRSA.DeleteContainer(sContainer_A))
+                Console.WriteLine("刪除A");
+            if (ZRSA.DeleteContainer(sContainer_B))
+                Console.WriteLine("刪除B");
+
+            Console.WriteLine("實際刪除金鑰是由 garbage collection 執行, 不會立刻刪除.");
+            Console.WriteLine($"{sContainer_A} = {ZRSA.ExistingContainer(sContainer_A)}, {ZRSA.GetContainerFileFullName(sContainer_A)}");
+            Console.WriteLine($"{sContainer_B} = {ZRSA.ExistingContainer(sContainer_B)}, {ZRSA.GetContainerFileFullName(sContainer_B)}");
+            Console.WriteLine();
 
         }
 

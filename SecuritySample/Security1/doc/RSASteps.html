@@ -1,0 +1,197 @@
+<!-- 
+RSASteps.html
+
+20190327, Honda, readme-RSA. 
+-->
+
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics - svc.011.idv.tw -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125026365-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125026365-2');
+</script>
+
+	<title>RSA Steps</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	
+    <style type="text/css">
+        body {
+            font-family: "DFKai-sb","MingLiU","Microsoft JhengHei";
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+<h1>RSA Steps</h1>
+	<button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="navbarSupportedContent" class="collapse navbar-collapse">
+<ul class="navbar-nav mr-auto">
+	<li class="nav-item">&nbsp;</li>
+</ul>
+<div class="text-right">
+<a href="http://www.011.idv.tw">011</a>
+</div>
+        </div>
+    </nav>
+
+
+<div class="container-fluid">
+
+        <div>
+            <span>From:</span>
+            <span>hondachen@hotmail.com</span>
+        </div>
+        <div>
+            <span>Date:</span>
+            <span>2019-03-29</span>
+        </div>
+        <br />
+
+本文示範以 C# 實作 RSA 的步驟:<a href="http://svc.011.idv.tw/ShareAll/KM/What/加密方法比較表.html">原始碼</a><br />
+若使用者A, 需要傳送加密訊息給使用者B, 則步驟如下:<a href="http://svc.011.idv.tw/ShareAll/KM/What/加密方法比較表.html">原文參考</a><br />
+以下簽章訊息並非必要步驟, 可省略.<br />
+<ol>
+	<li><a href="#1">建立金鑰</a>: AB雙方各自產生一組成對的(公鑰及私鑰).<br /> 
+	公鑰作為加密用途, 須對外公開;<br /> 
+	私鑰作為解密用途, 不對外公開, 必須嚴格保管, 確認授權後才能使用.<br />
+	</li>
+	<li><a href="#2">取得公鑰</a>: A取得(B的公鑰), 並確保(B的公鑰)是來自於B.<br />
+	公鑰應公開給任何人, 才能方便的接收來自任何人的加密訊息.<br />
+	公鑰通常會存放在可信賴的第三方憑證組織 CA Server 上, 公開給任何人取得, 可確保公鑰是來自於B. 例如: VISA 組織. <br />
+	公鑰的信賴方式: 1. 經由可信賴的第三方憑證組織的信賴程度. 2. 透過與B約定確認後的方法. <br />
+</li>
+	</li>
+	<li><a href="#3">加密原文</a>: A利用(B的公鑰), 加密(原文)後, 產生(加密訊息).</li>
+	<li><a href="#4">製作簽章</a>: A利用(A的私鑰), 簽章(原文)後, 產生(簽章訊息).</li>
+	<li><a href="#5">傳送訊息</a>: B取得(A的公鑰), (加密訊息), (簽章訊息).</li>
+	<li><a href="#6">解密訊息</a>: B利用(B的私鑰), 解密(加密訊息), 取得(原文).</li>
+	<li><a href="#7">驗證簽章</a>: B取得(A的公鑰), 驗證(簽章訊息), 確定(加密訊息)沒有被竄改.<br />
+	</li>
+</ol>
+
+
+<h1><a name="1">1. 建立金鑰</a></h1>
+AB雙方各自產生一組成對的(公鑰及私鑰).<br />
+<img src="1Create1.jpg" class="img-fluid" alt=""><br />
+
+<br />
+金鑰應存放在安全的容器中, 不建議存放在檔案或是程式碼中. 容器可選擇2種層級:<br />
+UseMachineKeyStore: 所有的使用者均可存取.<br />
+UseUserProtectedKey: 只有建立金鑰的使用者可以存取.<br />
+<img src="1Create2.jpg" class="img-fluid" alt="">
+
+<br />
+<br />
+ProviderName 及 ProviderType 可選擇已安裝的金鑰提供者. 已安裝的金鑰提供者記錄在 registry: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography\Defaults
+中. 例如:<br />
+Type 1  = Microsoft Strong Cryptographic Provider. = 預設.<br />
+Type 24 = Microsoft Enhanced RSA and AES Cryptographic Provider. = 新版.<br />
+<img src="1Create-RegistryKey.jpg" class="img-fluid" alt="">
+<br />
+<br />
+
+
+
+<h1><a name="2">2. 取得公鑰</a></h1>
+A取得(B的公鑰), 並確保(B的公鑰)是來自於B.<br />
+<img src="2GetPublicKey1.jpg" class="img-fluid" alt="">
+
+<br />
+<br />
+公鑰內容如下例:<br />
+&lt;RSAKeyValue&gt;&lt;Modulus&gt;uW5nX6hrDzcg+PUlPPFwwZauyxcUVKqSBnuEgDI/Jy3htFn00e4oSVuVsKXjJp0Y5wDj+w1zy0rL6lEA14cBDVNqUtNaKBL++A9j96OV9b9+FNq0NP3Zm0C+ahBuWKP7iJv+vDdwvIo9E6DRXw9bPPAFO3tf1Jj8P0V4AVYMcJ0=&lt;/Modulus&gt;&lt;Exponent&gt;AQAB&lt;/Exponent&gt;&lt;/RSAKeyValue&gt;<br />
+
+<br />
+ToXmlString(false): 不含私鑰.<br />
+ToXmlString(false): 包含私鑰.<br />
+<img src="2GetPublicKey2.jpg" class="img-fluid" alt="">
+<br />
+<br />
+
+<h1><a name="3">3. 加密原文</a></h1>
+A利用(B的公鑰), 加密(原文)後, 產生(加密訊息).<br />
+<img src="3Encrypt1.jpg" class="img-fluid" alt="">
+<br />
+
+
+<br />
+Encrypt() 的第2個參數為 OAEP padding:<br /> 
+false=PKCS#1 v1.5 padding.<br />
+true=與 Windows XP 相容.<br />
+<img src="3Encrypt2.jpg" class="img-fluid" alt="">
+<br />
+<br />
+
+<h1><a name="4">4. 製作簽章</a></h1>
+A利用(A的私鑰), 簽章(原文)後, 產生(簽章訊息).<br />
+<img src="4Sign1.jpg" class="img-fluid" alt="">
+<br />
+<br />
+
+製作簽章雜湊值的演算法, 這裡選用 SHA1 演算法傳入:<br />
+<img src="4Sign2.jpg" class="img-fluid" alt="">
+<br />
+<br />
+
+
+<h1><a name="5">5. 傳送訊息</a></h1>
+B取得(A的公鑰), (加密訊息), (簽章訊息).<br />
+<img src="5Send1.jpg" class="img-fluid" alt="">
+<br />
+<br />
+
+<h1><a name="6">6. 解密訊息</a></h1>
+B利用(B的私鑰), 解密(加密訊息), 取得(原文).<br />
+<img src="6Decrypt1.jpg" class="img-fluid" alt="">
+<br />
+
+<br />
+Decrypt() 的第2個參數為 OAEP padding, 必須選用跟加密相同的 paddying 方式:<br /> 
+false=PKCS#1 v1.5 padding.<br />
+true=與 Windows XP 相容.<br />
+<img src="6Decrypt2.jpg" class="img-fluid" alt="">
+<br />
+
+<br />
+<h1><a name="7">7. 驗證簽章</a></h1>
+B取得(A的公鑰), 驗證(簽章訊息), 確定(加密訊息)沒有被竄改.<br />
+<img src="7Verify1.jpg" class="img-fluid" alt="">
+<br />
+<br />
+
+驗證簽章雜湊值的演算法, 必須跟製作簽章的演算法一致:<br />
+<img src="7Verify2.jpg" class="img-fluid" alt="">
+<br />
+<br />
+
+
+<br />
+Log:<br />
+20190305, Honda, Create.<br />
+20190320, Honda, Remove CodeHelper C# index page.<br />
+<br />
+
+
+
+<div class="text-right">
+<a href="http://www.011.idv.tw">011</a>
+</div>
+
+</div>
+</body>
+
+</html>
