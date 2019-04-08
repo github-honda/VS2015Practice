@@ -63,7 +63,7 @@ namespace ZLib.DSecurity
             byte[] baHash1 = GetHashMD5(baPlainText);
             if (baHash1 == null)
                 return false;
-            return ZByte.ZCompare(baHash1, baHash);
+            return ZByte.Equals(baHash1, baHash);
         }
         public static Boolean VerifyHashMD5(string sFile, byte[] baHash)
         {
@@ -71,7 +71,7 @@ namespace ZLib.DSecurity
             byte[] baHash1 = GetHashMD5(sFile);
             if (baHash1 == null)
                 return false;
-            return ZByte.ZCompare(baHash1, baHash);
+            return ZByte.Equals(baHash1, baHash);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace ZLib.DSecurity
             byte[] baHash1 = GetHashSHA1(baPlainText);
             if (baHash1 == null)
                 return false;
-            return ZByte.ZCompare(baHash1, baHash);
+            return ZByte.Equals(baHash1, baHash);
         }
         public static Boolean VerifyHashSHA1(string sFile, byte[] baHash)
         {
@@ -131,7 +131,7 @@ namespace ZLib.DSecurity
             byte[] baHash1 = GetHashSHA1(sFile);
             if (baHash1 == null)
                 return false;
-            return ZByte.ZCompare(baHash1, baHash);
+            return ZByte.Equals(baHash1, baHash);
         }
 
     }

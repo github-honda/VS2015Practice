@@ -13,7 +13,7 @@ namespace ZLib
 {
     public static class ZByte
     {
-        public static Boolean ZCompare(this Binary b1, Binary b2)
+        public static Boolean Equals(this Binary b1, Binary b2)
         {
             return b1.Equals(b2);
         }
