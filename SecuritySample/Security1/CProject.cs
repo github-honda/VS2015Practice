@@ -27,6 +27,8 @@ namespace Security1
             // remove comment for test:
             //new SampleRSAMS().Run();
             new SampleRSA().Run();
+            new SampleMD5().Run();
+            new SampleSHA1().Run();
 
             Console.WriteLine("Press any key to end.");
             Console.ReadKey();

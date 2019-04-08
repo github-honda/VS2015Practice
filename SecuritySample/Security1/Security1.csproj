@@ -46,8 +46,10 @@
     <Compile Include="CProject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SampleMD5.cs" />
     <Compile Include="SampleRSA.cs" />
     <Compile Include="SampleRSAMS.cs" />
+    <Compile Include="SampleSHA1.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
