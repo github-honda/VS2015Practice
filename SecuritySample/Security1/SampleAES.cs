@@ -18,7 +18,8 @@ namespace Security1
             Console.WriteLine($"AES 測試:");
 
             Console.WriteLine($"1. 加密.");
-            string sPlainText = "123, 到台灣, 台灣有個阿里山. ~!@#$%^&*()<>{}[]:;\"'＊％！＃\\/ABCD.";
+            string sPlainTextSalt = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+            string sPlainText = "123, 到台灣, 台灣有個阿里山. ~!@#$%^&*()<>{}[]:;\"'＊％！＃\\/ABCD." + sPlainTextSalt;
             string sKey = "12345678901234567890123456789012";
             //string sKey = "1234567890123456";
             string sIV = "1234567890123456";

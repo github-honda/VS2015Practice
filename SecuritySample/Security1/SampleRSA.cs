@@ -44,8 +44,8 @@ namespace Security1
             Console.WriteLine();
 
             Console.WriteLine($"3. 加密原文: A利用(B的公鑰), 加密(原文)後, 產生(加密訊息).");
-            string sSalt = DateTime.Now.ToString("yyyyMMddHHmmssfff");
-            string sPlainText = "123, 到台灣, 台灣有個阿里山. ~!@#$%^&*()<>{}[]:;\"'＊％！＃\\/ABCD." + sSalt;
+            string sPlainTextSalt = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+            string sPlainText = "123, 到台灣, 台灣有個阿里山. ~!@#$%^&*()<>{}[]:;\"'＊％！＃\\/ABCD." + sPlainTextSalt;
             byte[] baPlainText = ZByte.GetBytesUTF8(sPlainText);
             byte[] baEncrypt = ZRSA.Encrypt(baPlainText, sPublicKeyXML_B);
             if (baEncrypt == null)
