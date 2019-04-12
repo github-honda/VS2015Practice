@@ -24,13 +24,20 @@ namespace Security1
 
         public void Run()
         {
-            // remove comment for test:
-            //new SampleRSAMS().Run();
-            new SampleRSA().Run();
-            new SampleMD5().Run();
-            new SampleSHA1().Run();
+            Boolean bAll = true;
 
-            Console.WriteLine("Press any key to end.");
+            // remove comment for test:
+            if (!new SampleRSA().Run()) bAll = false;
+            if (!new SampleMD5().Run()) bAll = false;
+            if (!new SampleSHA1().Run()) bAll = false;
+            if (!new SampleAES().Run()) bAll = false;
+
+            if (bAll)
+                Console.WriteLine("OK !");
+            else
+                Console.WriteLine("Fail !");
+
+            Console.WriteLine("Press any key to continue.");
             Console.ReadKey();
         }
     }

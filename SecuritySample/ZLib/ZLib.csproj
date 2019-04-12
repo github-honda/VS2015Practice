@@ -41,10 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DCollection\ZListBytes.cs" />
     <Compile Include="DSecurity\ZRSA.cs" />
     <Compile Include="DSecurity\ZSecurity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ZByte.cs" />
+    <Compile Include="ZFile.cs" />
     <Compile Include="ZLib.cs" />
   </ItemGroup>
   <ItemGroup />

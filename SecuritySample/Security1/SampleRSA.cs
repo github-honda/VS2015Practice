@@ -6,16 +6,15 @@ using System.Threading.Tasks;
 // add
 using System.Security.Cryptography;
 using System.Diagnostics;
+using ZLib;
 using ZLib.DSecurity;
 
 namespace Security1
 {
     class SampleRSA
     {
-        public void Run()
+        public Boolean Run()
         {
-            UTF8Encoding UTF8Converter = new UTF8Encoding();
-
             Console.WriteLine($"RSA 測試:");
             Console.WriteLine($"1. 建立金鑰: AB雙方各自產生一組成對的(公鑰及私鑰).");
             string sContainer_A = "A";
@@ -23,12 +22,12 @@ namespace Security1
             if (!ZRSA.CreateContainer(sContainer_A))
             {
                 Console.WriteLine(ZRSA.msError);
-                return;
+                return false;
             }
             if (!ZRSA.CreateContainer(sContainer_B))
             {
                 Console.WriteLine(ZRSA.msError);
-                return;
+                return false;
             }
             Console.WriteLine($"{sContainer_A} = {ZRSA.ExistingContainer(sContainer_A)}, {ZRSA.GetContainerFileFullName(sContainer_A)}");
             Console.WriteLine($"{sContainer_B} = {ZRSA.ExistingContainer(sContainer_B)}, {ZRSA.GetContainerFileFullName(sContainer_B)}");
@@ -39,7 +38,7 @@ namespace Security1
             if (string.IsNullOrEmpty(sPublicKeyXML_B))
             {
                 Console.WriteLine(ZRSA.msError);
-                return;
+                return false;
             }
             Console.WriteLine($"(B的公鑰) = {sPublicKeyXML_B.Length}, {sPublicKeyXML_B}");
             Console.WriteLine();
@@ -47,15 +46,15 @@ namespace Security1
             Console.WriteLine($"3. 加密原文: A利用(B的公鑰), 加密(原文)後, 產生(加密訊息).");
             string sSalt = DateTime.Now.ToString("yyyyMMddHHmmssfff");
             string sPlainText = "123, 到台灣, 台灣有個阿里山. ~!@#$%^&*()<>{}[]:;\"'＊％！＃\\/ABCD." + sSalt;
-            byte[] baPlainText = UTF8Converter.GetBytes(sPlainText);
+            byte[] baPlainText = ZByte.GetBytesUTF8(sPlainText);
             byte[] baEncrypt = ZRSA.Encrypt(baPlainText, sPublicKeyXML_B);
             if (baEncrypt == null)
             {
                 Console.WriteLine(ZRSA.msError);
-                return;
+                return false;
             }
-            Console.WriteLine($"原文: {UTF8Converter.GetByteCount(sPlainText)}, {sPlainText}");
-            Console.WriteLine($"密文: {baEncrypt.Length}, {BitConverter.ToString(baEncrypt)}");
+            Console.WriteLine($"原文: {baPlainText.Length}, {sPlainText}");
+            Console.WriteLine($"密文: {baEncrypt.Length}, {baEncrypt.ZGetStringHex()}");
             Console.WriteLine();
 
             Console.WriteLine($"4. 製作簽章: A利用(A的私鑰), 簽章(原文)後, 產生(簽章訊息).");
@@ -64,9 +63,9 @@ namespace Security1
             if (baSignatureUTF8 == null)
             {
                 Console.WriteLine(ZRSA.msError);
-                return;
+                return false;
             }
-            Console.WriteLine($"簽章: {baSignatureUTF8.Length}, {BitConverter.ToString(baSignatureUTF8)}");
+            Console.WriteLine($"簽章: {baSignatureUTF8.Length}, {baSignatureUTF8.ZGetStringHex()}");
             Console.WriteLine();
 
             Console.WriteLine($"5. 傳送訊息: B取得(A的公鑰), (加密訊息), (簽章訊息).");
@@ -74,7 +73,7 @@ namespace Security1
             if (string.IsNullOrEmpty(sPublicKeyXML_A))
             {
                 Console.WriteLine(ZRSA.msError);
-                return;
+                return false;
             }
             Console.WriteLine($"(A的公鑰) = {sPublicKeyXML_A.Length}, {sPublicKeyXML_A}");
             Console.WriteLine();
@@ -84,7 +83,7 @@ namespace Security1
             if (string.IsNullOrEmpty(sPrivateKeyXML_B))
             {
                 Console.WriteLine(ZRSA.msError);
-                return;
+                return false;
             }
             Console.WriteLine($"(B的私鑰) = {sPrivateKeyXML_B.Length}, {sPrivateKeyXML_B}");
 
@@ -92,9 +91,9 @@ namespace Security1
             if (baDecrypt == null)
             {
                 Console.WriteLine(ZRSA.msError);
-                return;
+                return false;
             }
-            string sDecrypt = UTF8Converter.GetString(baDecrypt);
+            string sDecrypt = baDecrypt.ZGetStringUTF8();
             Console.WriteLine($"解密訊息 = {baDecrypt.Length}, {sDecrypt}");
             Console.WriteLine($"解密結果 = {sDecrypt == sPlainText}.");
             Console.WriteLine();
@@ -113,6 +112,7 @@ namespace Security1
             Console.WriteLine($"{sContainer_A} = {ZRSA.ExistingContainer(sContainer_A)}, {ZRSA.GetContainerFileFullName(sContainer_A)}");
             Console.WriteLine($"{sContainer_B} = {ZRSA.ExistingContainer(sContainer_B)}, {ZRSA.GetContainerFileFullName(sContainer_B)}");
             Console.WriteLine();
+            return true;
 
         }
 
