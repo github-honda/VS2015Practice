@@ -137,6 +137,12 @@ namespace ZLib.DSecurity
                     //Debug.Print(myGetInfo(rsa1));
                     return true;
                 }
+                // 依據RSA 的key size不同, 例如 在(PKCS #1 V 1.5 padding)下, 1024 bits可加密117 bytes, 2048 bits 則可加密 245 bytes.
+                // ref:
+                // https://stackoverflow.com/questions/1496793/rsa-encryption-getting-bad-length
+                // RSA encryption is only mean for small amounts of data, the amount of data you can encrypt is dependent on the size of the key you are using, for example for 1024 bit RSA keys, and PKCS # 1 V1.5 padding, you can encrypt 117 bytes at most, with a 2048 RSA key, you can encrypt 245 bytes.
+                // There's a good reason for this, asymmetric encryption is computationally expensive. If you want to encrypt large amounts of data you should be using symmetric encryption. But what if you want non-repudiation? Well what you then do is use both. You create a symmetric key and exchange it using asymmetric encryption, then that safely exchanged symmetric key to encrypt your large amounts of data. This is what SSL and WS-Secure use underneath the covers.
+
                 // diff. from default (new RSACryptoServiceProvider())
                 // .KeyExchangeAlgorithm=RSA-PKCS1-KeyEx.
                 // .KeySize=1024.
@@ -353,13 +359,18 @@ namespace ZLib.DSecurity
         }
 
         /// <summary>
-        /// 加密原文.
+        /// 加密原文. 原文長度最多為117 bytes (採用 PKCS #1 V 1.5 padding, 1024 bits 加密).
         /// </summary>
         /// <param name="baToEncrypt"></param>
         /// <param name="sPublicKeyXML"></param>
         /// <returns></returns>
         public static byte[] Encrypt(byte[] baToEncrypt, string sPublicKeyXML)
         {
+            // 依據RSA 的key size不同, 例如 在(PKCS #1 V 1.5 padding)下, 1024 bits可加密117 bytes, 2048 bits 則可加密 245 bytes.
+            // ref:
+            // https://stackoverflow.com/questions/1496793/rsa-encryption-getting-bad-length
+            // RSA encryption is only mean for small amounts of data, the amount of data you can encrypt is dependent on the size of the key you are using, for example for 1024 bit RSA keys, and PKCS # 1 V1.5 padding, you can encrypt 117 bytes at most, with a 2048 RSA key, you can encrypt 245 bytes.
+            // There's a good reason for this, asymmetric encryption is computationally expensive. If you want to encrypt large amounts of data you should be using symmetric encryption. But what if you want non-repudiation? Well what you then do is use both. You create a symmetric key and exchange it using asymmetric encryption, then that safely exchanged symmetric key to encrypt your large amounts of data. This is what SSL and WS-Secure use underneath the covers.
             msError = string.Empty;
             try
             {

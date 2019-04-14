@@ -43,9 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AESPerformance.cs" />
     <Compile Include="CProject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RSAPerformance.cs" />
     <Compile Include="SampleAES.cs" />
     <Compile Include="SampleMD5.cs" />
     <Compile Include="SampleRSA.cs" />
