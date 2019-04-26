@@ -81,7 +81,7 @@ namespace Security1
             Console.WriteLine($"驗證: {baPlainText.ZEquals(baDecrypt)}");
             Console.WriteLine();
 
-            Console.WriteLine($"3. 加密-檔案");
+            Console.WriteLine($"5. 加密-檔案");
             string sFilePlainText = "DESPlainText.dat";
             string sFileEncrypt = "DESEncrypt.dat";
             File.WriteAllBytes(sFilePlainText, baPlainText);
@@ -91,7 +91,7 @@ namespace Security1
                 return false;
             }
 
-            Console.WriteLine($"4. 解密-檔案");
+            Console.WriteLine($"6. 解密-檔案");
             string sFileDecrypt = "DESDecrypt.dat";
             if (!ZSecurity.DecryptDES(sFileEncrypt, sFileDecrypt, baKey_RFC2898, baIV_RFC2898))
             {
