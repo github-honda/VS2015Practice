@@ -31,8 +31,9 @@ namespace Security1
             if (!new SampleMD5().Run()) bAll = false;
             if (!new SampleSHA1().Run()) bAll = false;
             if (!new SampleAES().Run()) bAll = false;
-            if (!new RSAPerformance().Run()) bAll = false;
-            if (!new AESPerformance().Run()) bAll = false;
+            if (!new SampleDES().Run()) bAll = false;
+            //if (!new RSAPerformance().Run()) bAll = false;
+            //if (!new AESPerformance().Run()) bAll = false;
 
             if (bAll)
                 Console.WriteLine("All OK !");

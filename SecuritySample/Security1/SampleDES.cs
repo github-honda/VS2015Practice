@@ -9,24 +9,24 @@ using System.IO;
 using ZLib;
 using ZLib.DSecurity;
 
+
 namespace Security1
 {
-    class SampleAES
+    class SampleDES
     {
         public Boolean Run()
         {
-            Console.WriteLine($"AES 測試:");
+            Console.WriteLine($"DES 測試:");
 
             Console.WriteLine($"1. 加密.");
             string sPlainTextSalt = DateTime.Now.ToString("yyyyMMddHHmmssfff");
             string sPlainText = "123, 到台灣, 台灣有個阿里山. ~!@#$%^&*()<>{}[]:;\"'＊％！＃\\/ABCD." + sPlainTextSalt;
-            string sKey = "12345678901234567890123456789012";
-            //string sKey = "1234567890123456";
-            string sIV = "1234567890123456";
+            string sKey = "12345678";
+            string sIV = "12345678";
             byte[] baPlainText = ZByte.GetBytesUTF8(sPlainText);
             byte[] baKey = ZByte.GetBytesUTF8(sKey);
             byte[] baIV = ZByte.GetBytesUTF8(sIV);
-            byte[] baEncrypt = ZSecurity.EncryptAES(baPlainText, baKey, baIV);
+            byte[] baEncrypt = ZSecurity.EncryptDES(baPlainText, baKey, baIV);
             if (baEncrypt == null)
             {
                 Console.WriteLine(ZSecurity.msError);
@@ -39,7 +39,7 @@ namespace Security1
             Console.WriteLine();
 
             Console.WriteLine($"2. 解密.");
-            byte[] baDecrypt = ZSecurity.DecryptAES(baEncrypt, baKey, baIV);
+            byte[] baDecrypt = ZSecurity.DecryptDES(baEncrypt, baKey, baIV);
             if (baDecrypt == null)
             {
                 Console.WriteLine(ZSecurity.msError);
@@ -55,16 +55,22 @@ namespace Security1
             string sSalt = "12345678";
             byte[] baSalt = ZByte.GetBytesUTF8(sSalt);
             var vRFC2898 = ZSecurity.CreateRFC2898(baKey, baSalt);
-            byte[] baKey_RFC2898 = vRFC2898.GetBytes(32);
-            byte[] baIV_RFC2898 = vRFC2898.GetBytes(16);
-            baEncrypt = ZSecurity.EncryptAES(baPlainText, baKey_RFC2898, baIV_RFC2898);
+            byte[] baKey_RFC2898 = vRFC2898.GetBytes(8);
+            byte[] baIV_RFC2898 = vRFC2898.GetBytes(8);
+            baEncrypt = ZSecurity.EncryptDES(baPlainText, baKey_RFC2898, baIV_RFC2898);
+            if (baEncrypt == null)
+            {
+                Console.WriteLine(ZSecurity.msError);
+                return false;
+            }
+
             Console.WriteLine($"Key Salted: {baKey.Length}, {baKey_RFC2898.ZGetStringHex()}");
             Console.WriteLine($"IV Salted: {baIV.Length}, {baIV_RFC2898.ZGetStringHex()}");
             Console.WriteLine($"密文: {baEncrypt.Length}, {baEncrypt.ZGetStringHex()}");
             Console.WriteLine();
 
             Console.WriteLine($"4. 解密-金鑰加鹽.");
-            baDecrypt = ZSecurity.DecryptAES(baEncrypt, baKey_RFC2898, baIV_RFC2898);
+            baDecrypt = ZSecurity.DecryptDES(baEncrypt, baKey_RFC2898, baIV_RFC2898);
             if (baDecrypt == null)
             {
                 Console.WriteLine(ZSecurity.msError);
@@ -76,18 +82,18 @@ namespace Security1
             Console.WriteLine();
 
             Console.WriteLine($"3. 加密-檔案");
-            string sFilePlainText = "AESPlainText.dat";
-            string sFileEncrypt = "AESEncrypt.dat";
+            string sFilePlainText = "DESPlainText.dat";
+            string sFileEncrypt = "DESEncrypt.dat";
             File.WriteAllBytes(sFilePlainText, baPlainText);
-            if (!ZSecurity.EncryptAES(sFilePlainText, sFileEncrypt, baKey_RFC2898, baIV_RFC2898))
+            if (!ZSecurity.EncryptDES(sFilePlainText, sFileEncrypt, baKey_RFC2898, baIV_RFC2898))
             {
                 Console.WriteLine(ZSecurity.msError);
                 return false;
             }
 
             Console.WriteLine($"4. 解密-檔案");
-            string sFileDecrypt = "AESDecrypt.dat";
-            if (!ZSecurity.DecryptAES(sFileEncrypt, sFileDecrypt, baKey_RFC2898, baIV_RFC2898))
+            string sFileDecrypt = "DESDecrypt.dat";
+            if (!ZSecurity.DecryptDES(sFileEncrypt, sFileDecrypt, baKey_RFC2898, baIV_RFC2898))
             {
                 Console.WriteLine(ZSecurity.msError);
                 return false;
@@ -98,5 +104,6 @@ namespace Security1
 
             return true;
         }
+
     }
 }

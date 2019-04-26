@@ -184,6 +184,41 @@ namespace ZLib.DSecurity
         }
 
         /// <summary>
+        /// 通用 SymmetricAlgorithm 加密檔案函數. 可指定 (AES, DES, RC2, Rijndael, TripleDES) 演算法加密.
+        /// </summary>
+        /// <param name="symAlg"></param>
+        /// <param name="sFileInput"></param>
+        /// <param name="sFileEncrypt"></param>
+        /// <returns></returns>
+        public static Boolean Encrypt(SymmetricAlgorithm symAlg, string sFileInput, string sFileEncrypt)
+        {
+            try
+            {
+                using (FileStream streamInput = new FileStream(sFileInput, FileMode.Open, FileAccess.Read))
+                using (FileStream streamEncrypt = new FileStream(sFileEncrypt, FileMode.Create, FileAccess.Write))
+                using (CryptoStream streamCrypto = new CryptoStream(streamEncrypt, symAlg.CreateEncryptor(), CryptoStreamMode.Write))
+                {
+                    byte[] baBuffer = new byte[ZFile.ciBufferSize];
+                    int iReadBytes = 0;
+                    do
+                    {
+                        iReadBytes = streamInput.Read(baBuffer, 0, baBuffer.Length);
+                        if (iReadBytes > 0)
+                            streamCrypto.Write(baBuffer, 0, iReadBytes);
+                    }
+                    while (iReadBytes > 0);
+                    streamCrypto.FlushFinalBlock();
+                    return true;
+                }
+            }
+            catch (Exception e1)
+            {
+                msError = e1.Message;
+                return false;
+            }
+        }
+
+        /// <summary>
         /// 通用 SymmetricAlgorithm 解密函數. 可指定 (AES, DES, RC2, Rijndael, TripleDES) 演算法解密.
         /// </summary>
         /// <param name="symAlg"></param>
@@ -210,6 +245,42 @@ namespace ZLib.DSecurity
                 return null;
             }
         }
+
+        /// <summary>
+        /// 通用 SymmetricAlgorithm 解密檔案函數. 可指定 (AES, DES, RC2, Rijndael, TripleDES) 演算法解密.
+        /// </summary>
+        /// <param name="symAlg"></param>
+        /// <param name="sFileEncrypt"></param>
+        /// <param name="sFileDecrypt"></param>
+        /// <returns></returns>
+        public static Boolean Decrypt(SymmetricAlgorithm symAlg, string sFileEncrypt, string sFileDecrypt)
+        {
+            try
+            {
+                using (FileStream streamEncrypt = new FileStream(sFileEncrypt, FileMode.Open, FileAccess.Read))
+                using (FileStream streamDecrypt = new FileStream(sFileDecrypt, FileMode.Create, FileAccess.Write))
+                using (CryptoStream streamCrypto = new CryptoStream(streamDecrypt, symAlg.CreateDecryptor(), CryptoStreamMode.Write))
+                {
+                    byte[] baBuffer = new byte[ZFile.ciBufferSize];
+                    int iReadBytes = 0;
+                    do
+                    {
+                        iReadBytes = streamEncrypt.Read(baBuffer, 0, baBuffer.Length);
+                        if (iReadBytes > 0)
+                            streamCrypto.Write(baBuffer, 0, iReadBytes);
+                    }
+                    while (iReadBytes > 0);
+                    streamCrypto.FlushFinalBlock();
+                    return true;
+                }
+            }
+            catch (Exception e1)
+            {
+                msError = e1.Message;
+                return false;
+            }
+        }
+
 
         /// <summary>
         /// 取得 RFC2898 標準加鹽物件, 可用來產生 Key 跟 IV. 參數 baSalt 至少為 8 bytes.
@@ -250,9 +321,129 @@ namespace ZLib.DSecurity
 
         #endregion
 
+        #region DES
+        /// <summary>
+        /// 以 DES 演算法加密 byte[]. baKey 應為 8 bytes, baIV 應為 8 bytes.
+        /// </summary>
+        /// <param name="baPlainText"></param>
+        /// <param name="baKey"></param>
+        /// <param name="baIV"></param>
+        /// <returns></returns>
+        public static byte[] EncryptDES(byte[] baPlainText, byte[] baKey, byte[] baIV)
+        {
+            try
+            {
+                byte[] baEncrypt = null;
+                using (DESCryptoServiceProvider des1 = new DESCryptoServiceProvider())
+                {
+                    des1.Key = baKey;
+                    des1.IV = baIV;
+
+                    baEncrypt = Encrypt(des1, baPlainText);
+                    if (baEncrypt == null)
+                        return null;
+                    des1.Clear();
+                }
+                return baEncrypt;
+            }
+            catch (Exception e1)
+            {
+                msError = e1.Message;
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 以 DES 演算法加密檔案. baKey 應為 8 bytes, baIV 應為 8 bytes.
+        /// </summary>
+        /// <param name="sFileInput"></param>
+        /// <param name="sFileEncrypted"></param>
+        /// <param name="baKey"></param>
+        /// <param name="baIV"></param>
+        /// <returns></returns>
+        public static Boolean EncryptDES(string sFileInput, string sFileEncrypted, byte[] baKey, byte[] baIV)
+        {
+            try
+            {
+                using (DESCryptoServiceProvider des1 = new DESCryptoServiceProvider())
+                {
+                    des1.Key = baKey;
+                    des1.IV = baIV;
+                    if (!Encrypt(des1, sFileInput, sFileEncrypted))
+                        return false;
+                    des1.Clear();
+                    return true;
+                }
+            }
+            catch (Exception e1)
+            {
+                msError = e1.Message;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 以 DES 演算法解密 byte[]. baKey 應為 8 bytes, baIV 應為 8 bytes.
+        /// </summary>
+        /// <param name="baCipher"></param>
+        /// <param name="baKey"></param>
+        /// <param name="baIV"></param>
+        /// <returns></returns>
+        public static byte[] DecryptDES(byte[] baCipher, byte[] baKey, byte[] baIV)
+        {
+            try
+            {
+                using (DESCryptoServiceProvider des1 = new DESCryptoServiceProvider())
+                {
+                    des1.Key = baKey;
+                    des1.IV = baIV;
+                    byte[] baDecrypt = Decrypt(des1, baCipher);
+                    if (baDecrypt == null)
+                        return null;
+                    des1.Clear();
+                    return baDecrypt;
+                }
+            }
+            catch (Exception e1)
+            {
+                msError = e1.Message;
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 以 DES 演算法解密檔案. baKey 應為 8 bytes, baIV 應為 8 bytes.
+        /// </summary>
+        /// <param name="sFileEncrypt"></param>
+        /// <param name="sFileDecrypt"></param>
+        /// <param name="baKey"></param>
+        /// <param name="baIV"></param>
+        /// <returns></returns>
+        public static Boolean DecryptDES(string sFileEncrypt, string sFileDecrypt, byte[] baKey, byte[] baIV)
+        {
+            try
+            {
+                using (DESCryptoServiceProvider des1 = new DESCryptoServiceProvider())
+                {
+                    des1.Key = baKey;
+                    des1.IV = baIV;
+                    Decrypt(des1, sFileEncrypt, sFileDecrypt);
+                    des1.Clear();
+                    return true;
+                }
+            }
+            catch (Exception e1)
+            {
+                msError = e1.Message;
+                return false;
+            }
+        }
+
+        #endregion
+
         #region AES
         /// <summary>
-        /// 以AES演算法加密. AES同Rijndael. Key應為(16 or 32) bytes, baIV應為16 bytes.
+        /// 以 AES 演算法加密 byte[]. AES 同 Rijndael. baKey 應為(16 or 32) bytes, baIV 應為 16 bytes.
         /// </summary>
         /// <param name="baPlainText"></param>
         /// <param name="baKey"></param>
@@ -262,8 +453,6 @@ namespace ZLib.DSecurity
         {
             try
             {
-                if (baPlainText == null || baPlainText.Length < 1)
-                    throw new ArgumentNullException(nameof(baPlainText));
                 byte[] baEncrypt = null;
                 using (AesCryptoServiceProvider aes1 = new AesCryptoServiceProvider())
                 {
@@ -273,19 +462,9 @@ namespace ZLib.DSecurity
                     //default aesAlg.BlockSize = 128;  IV的長度
                     aes1.Key = baKey;
                     aes1.IV = baIV;
-
-                    ICryptoTransform transform1 = aes1.CreateEncryptor(aes1.Key, aes1.IV);
-                    using (MemoryStream ms1 = new MemoryStream())
-                    {
-                        using (CryptoStream streamEncrypt = new CryptoStream(ms1, transform1, CryptoStreamMode.Write))
-                        {
-                            using (BinaryWriter writer1 = new BinaryWriter(streamEncrypt))
-                            {
-                                writer1.Write(baPlainText);
-                            }
-                        }
-                        baEncrypt = ms1.ToArray();
-                    }
+                    baEncrypt = Encrypt(aes1, baPlainText);
+                    if (baEncrypt == null)
+                        return null;
                     aes1.Clear();
                 }
                 return baEncrypt;
@@ -297,9 +476,38 @@ namespace ZLib.DSecurity
             }
         }
 
+        /// <summary>
+        /// 以 AES 演算法加密檔案. AES 同 Rijndael. baKey 應為(16 or 32) bytes, baIV 應為 16 bytes.
+        /// </summary>
+        /// <param name="sFileInput"></param>
+        /// <param name="sFileEncrypted"></param>
+        /// <param name="baKey"></param>
+        /// <param name="baIV"></param>
+        /// <returns></returns>
+        public static Boolean EncryptAES(string sFileInput, string sFileEncrypted, byte[] baKey, byte[] baIV)
+        {
+            try
+            {
+                using (AesCryptoServiceProvider aes1 = new AesCryptoServiceProvider())
+                {
+                    aes1.Key = baKey;
+                    aes1.IV = baIV;
+                    if (!Encrypt(aes1, sFileInput, sFileEncrypted))
+                        return false;
+                    aes1.Clear();
+                    return true;
+                }
+            }
+            catch (Exception e1)
+            {
+                msError = e1.Message;
+                return false;
+            }
+        }
+
 
         /// <summary>
-        /// 以AES演算法解密. AES同Rijndael. Key應為(16 or 32) bytes, baIV應為16 bytes.
+        /// 以 AES 演算法解密 byte[]. AES 同Rijndael. baKey 應為(16 or 32) bytes, baIV 應為 16 bytes.
         /// </summary>
         /// <param name="baCipher"></param>
         /// <param name="baKey"></param>
@@ -309,8 +517,6 @@ namespace ZLib.DSecurity
         {
             try
             {
-                if (baCipher == null || baCipher.Length < 1)
-                    throw new ArgumentNullException(nameof(baCipher));
                 using (AesCryptoServiceProvider aes1 = new AesCryptoServiceProvider())
                 {
                     //default aesAlg.Mode = CipherMode.CBC; // CBC (Cipher-Block Chaining): CBC是一種串鏈的加密方式, 參考: http://svc.luckstar.com.tw/ShareAll/KM/What/加密方法比較表.html
@@ -319,17 +525,11 @@ namespace ZLib.DSecurity
                     //default aesAlg.BlockSize = 128;  IV的長度
                     aes1.Key = baKey;
                     aes1.IV = baIV;
-                    ICryptoTransform transform1 = aes1.CreateDecryptor(aes1.Key, aes1.IV);
-                    using (MemoryStream ms1 = new MemoryStream(baCipher))
-                    {
-                        using (CryptoStream streamDecrypt = new CryptoStream(ms1, transform1, CryptoStreamMode.Read))
-                        {
-                            // CryptoStream 不支援 length: 
-                            // exception: 資料留不支援搜尋
-                            return ZFile.ReadAllBytes(streamDecrypt);
-                        }
-
-                    }
+                    byte[] baDecrypt = Decrypt(aes1, baCipher);
+                    if (baDecrypt == null)
+                        return null;
+                    aes1.Clear();
+                    return baDecrypt;
                 }
             }
             catch (Exception e1)
@@ -338,6 +538,35 @@ namespace ZLib.DSecurity
                 return null;
             }
         }
+
+        /// <summary>
+        /// 以 AES 演算法解密檔案. AES 同 Rijndael. baKey 應為(16 or 32) bytes, baIV 應為 16 bytes.
+        /// </summary>
+        /// <param name="sFileEncrypt"></param>
+        /// <param name="sFileDecrypt"></param>
+        /// <param name="baKey"></param>
+        /// <param name="baIV"></param>
+        /// <returns></returns>
+        public static Boolean DecryptAES(string sFileEncrypt, string sFileDecrypt, byte[] baKey, byte[] baIV)
+        {
+            try
+            {
+                using (AesCryptoServiceProvider aes1 = new AesCryptoServiceProvider())
+                {
+                    aes1.Key = baKey;
+                    aes1.IV = baIV;
+                    Decrypt(aes1, sFileEncrypt, sFileDecrypt);
+                    aes1.Clear();
+                    return true;
+                }
+            }
+            catch (Exception e1)
+            {
+                msError = e1.Message;
+                return false;
+            }
+        }
+
         #endregion
     }
 }

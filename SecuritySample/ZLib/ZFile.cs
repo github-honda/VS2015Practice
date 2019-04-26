@@ -11,9 +11,10 @@ namespace ZLib
 {
     public class ZFile
     {
+        public const int ciBufferSize = 4096;
         public static byte[] ReadAllBytes(Stream stream1)
         {
-            return ReadAllBytes(stream1, 1024 * 1024).ToArray().ZJoin();
+            return ReadAllBytes(stream1, ciBufferSize).ToArray().ZJoin();
         }
         public static List<byte[]> ReadAllBytes(Stream stream1, int iChunkSize)
         {
@@ -31,6 +32,12 @@ namespace ZLib
             }
             return list1;
         }
+        public static void WriteBytes(Stream stream1, byte[] ba1)
+        {
+            stream1.Write(ba1, 0, ba1.Length);
+        }
+
+
 
     }
 }
