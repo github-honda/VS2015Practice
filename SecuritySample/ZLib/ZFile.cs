@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 // add
 using System.IO;
-using ZLib.DCollection;
 
 namespace ZLib
 {

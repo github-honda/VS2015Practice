@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Diagnostics;
 using System.IO;
-using ZLib.DCollection;
 
 
 namespace ZLib.DSecurity
