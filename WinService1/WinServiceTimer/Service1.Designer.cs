@@ -1,4 +1,4 @@
-﻿namespace WinService1
+﻿namespace WinServiceTimer
 {
     partial class Service1
     {
@@ -31,7 +31,7 @@
             // 
             // Service1
             // 
-            this.ServiceName = "WinService1";
+            this.ServiceName = "WinServiceTimer";
 
         }
 

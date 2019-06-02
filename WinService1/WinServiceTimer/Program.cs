@@ -9,7 +9,7 @@ using System.Configuration.Install;
 using System.Reflection;
 using System.Collections;
 
-namespace WinService1
+namespace WinServiceTimer
 {
     static class Program
     {
