@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics - svc.011.idv.tw -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125026365-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125026365-2');
+</script>
+
+	<title>WinForm CRUD Template for SQL Server</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	
+    <style type="text/css">
+        body {
+            font-family: "DFKai-sb","MingLiU","Microsoft JhengHei";
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    WinForm CRUD Template for SQL Server
+	<button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="navbarSupportedContent" class="collapse navbar-collapse">
+<ul class="navbar-nav mr-auto">
+	<li class="nav-item">&nbsp;</li>
+</ul>
+<div class="text-right">
+<a href="http://www.011.idv.tw/WebTool">WebTool</a>
+</div>
+        </div>
+    </nav>
+
+<div class="container-fluid">
+
+本程式示範新增、查詢、修改、刪除 SQL Server 資料庫資料的語法, 使用 .Net Framewrok 原生的 System.Data.SqlClient 於 Visual Studio 2015 中開發, 作為語法細節參考.<br />
+
+原始碼: <a href="http://www.011.idv.tw/WebTool">下載</a><br /> 
+資料庫: <a href="CreateDBTemplate.sql">下載</a><br />
+測試資料: <a href="InsertData.sql">下載</a><br />
+<br />
+
+
+執行畫面:<br />
+<img src="1020.jpg" class="img-fluid" alt="img"><br />
+<br />
+
+
+新增<br />
+<textarea class="form-control rounded-top bg-light" id="exampleFormControlTextarea1" rows="20">
+iAffected = 0;
+sCmd = "INSERT [dbo].[TConfig] ([FParentID], [FSeqNo], [FKey], [FValue], [FValueB], [FReadonly], [FNote]) VALUES (@FParentID, @FSeqNo, @FKey, @FValue, @FValueB, @FReadonly, @FNote)";
+try
+{
+	using (SqlConnection cn1 = new SqlConnection(_sConnectionString))
+	using (SqlCommand command = cn1.CreateCommand())
+	{
+		command.CommandText = sCmd;
+		command.Parameters.AddWithValue("@FParentID", FParentID.ZToObject_DBNull());
+		command.Parameters.AddWithValue("@FSeqNo", FSeqNo.ZToObject_DBNull());
+		command.Parameters.AddWithValue("@FKey", txtFKey.Text.ZToObject_DBNull());
+		command.Parameters.AddWithValue("@FValue", txtFValue.Text.ZToObject_DBNull());
+		command.Parameters.AddWithValue("@FValueB", txtFValueB.Text.ZToObject_DBNull());
+		command.Parameters.AddWithValue("@FReadonly", chkReadonly.Checked.ZToObject_DBNull());
+		command.Parameters.AddWithValue("@FNote", txtFNote.Text.ZToObject_DBNull());
+		cn1.Open();
+		iAffected = command.ExecuteNonQuery();
+	}
+}
+catch (Exception e1)
+{
+	MessageBox.Show(e1.Message);
+	return;
+}
+if (iAffected != 1)
+{
+	MessageBox.Show("Fail.");
+	return;
+}
+</textarea>
+<br />
+
+
+
+查詢<br />
+<textarea class="form-control rounded-top bg-light" id="exampleFormControlTextarea1" rows="20">
+DataRow DBReadRow_ID(int iID)
+{
+	try
+	{
+		using (SqlConnection cn1 = new SqlConnection(_sConnectionString))
+		using (SqlCommand command = cn1.CreateCommand())
+		{
+			command.CommandText = "Select * from TConfig where FID=@FID";
+			command.Parameters.AddWithValue("@FID", iID);
+			cn1.Open();
+			using (SqlDataAdapter adapter1 = new SqlDataAdapter(command))
+			{
+				DataSet ds1 = null;
+				ds1 = new DataSet();
+				adapter1.Fill(ds1);
+				if (ds1.Tables[0].Rows.Count < 1)
+					return null;
+
+				return ds1.Tables[0].Rows[0];
+			}
+		}
+	}
+	catch (Exception ex1)
+	{
+		MessageBox.Show(ex1.Message + _sConnectionString);
+	}
+	return null;
+}
+void EntryRead(int iID)
+{
+	DataRow row1 = DBReadRow_ID(iID);
+	if (row1 == null)
+	{
+		EntryClear();
+		MessageBox.Show($"No data found. ID={iID}.");
+		return;
+	}
+
+	// Fetch to buffers.
+	txtFID.Text = row1["FID"].ZToInt().ZToString();
+	txtFParentID.Text = row1["FParentID"].ZToInt().ZToString();
+	txtFSeqNo.Text = row1["FSeqNo"].ZToInt().ZToString();
+	txtFKey.Text = row1["FKey"].ZToString();
+	txtFValue.Text = row1["FValue"].ZToString();
+	txtFValueB.Text = row1["FValueB"].ZToString();
+	chkReadonly.Checked = row1["FReadonly"].ZToInt() == 1;
+	txtFNote.Text = row1["FNote"].ZToString();
+	lblFCreateTime.Text = row1["FCreateTime"].ZToDateTime().ZToString_MsDash();
+	lblFUpdateTime.Text = row1["FUpdateTime"].ZToDateTime().ZToString_MsDash();
+}
+</textarea>
+<br />
+
+修改<br />
+<textarea class="form-control rounded-top bg-light" id="exampleFormControlTextarea1" rows="32">
+int iAffected = 0;
+string sCmd = "Update [dbo].[TConfig] set [FParentID]=@FParentID, [FSeqNo]=@FSeqNo, [FKey]=@FKey, [FValue]=@FValue, [FValueB]=@FValueB, [FReadonly]=@FReadonly, [FNote]=@FNote, [FUpdateTime]=getdate() where [FID]=@FID and [FUpdateTime]=@FUpdateTime";
+try
+{
+	using (SqlConnection cn1 = new SqlConnection(_sConnectionString))
+	using (SqlCommand command = cn1.CreateCommand())
+	{
+		command.CommandText = sCmd;
+		command.Parameters.AddWithValue("@FParentID", FParentID.ZToObject_DBNull());
+		command.Parameters.AddWithValue("@FSeqNo", FSeqNo.ZToObject_DBNull());
+		command.Parameters.AddWithValue("@FKey", txtFKey.Text.ZToObject_DBNull());
+		command.Parameters.AddWithValue("@FValue", txtFValue.Text.ZToObject_DBNull());
+		command.Parameters.AddWithValue("@FValueB", txtFValueB.Text.ZToObject_DBNull());
+		command.Parameters.AddWithValue("@FReadonly", chkReadonly.Checked.ZToObject_DBNull());
+		command.Parameters.AddWithValue("@FNote", txtFNote.Text.ZToObject_DBNull());
+		command.Parameters.AddWithValue("@FID", FID.ZToObject_DBNull());
+		command.Parameters.AddWithValue("@FUpdateTime", FUpdateTime.ZToObject_DBNull());
+		cn1.Open();
+		iAffected = command.ExecuteNonQuery();
+	}
+}
+catch (Exception e1)
+{
+	MessageBox.Show(e1.Message);
+	return;
+}
+if (iAffected != 1)
+{
+	MessageBox.Show("Fail.");
+	return;
+}
+</textarea>
+<br />
+
+刪除<br />
+<textarea class="form-control rounded-top bg-light" id="exampleFormControlTextarea1" rows="20">
+int iAffected = 0;
+try
+{
+	using (SqlConnection cn1 = new SqlConnection(_sConnectionString))
+	using (SqlCommand command = cn1.CreateCommand())
+	{
+		command.CommandText = "delete [dbo].[TConfig] where [FID]=@FID and [FUpdateTime]=@FUpdateTime";
+		command.Parameters.AddWithValue("@FID", FID);
+		command.Parameters.AddWithValue("@FUpdateTime", FUpdateTime);
+		cn1.Open();
+		iAffected = command.ExecuteNonQuery();
+	}
+}
+catch (Exception e1)
+{
+	MessageBox.Show(e1.Message);
+	return;
+}
+if (iAffected != 1)
+{
+	MessageBox.Show("Fail.");
+	return;
+}
+</textarea>
+<br />
+
+Log<br />
+20200116, HondaChen@hotmail.com, Create.<br />
+<br />
+
+<div class="text-right">
+<a href="http://www.011.idv.tw/WebTool">WebTool</a>
+</div>
+
+</div>
+</body>
+
+</html>
