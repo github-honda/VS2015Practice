@@ -31,7 +31,7 @@ CREATE TABLE `tconfig` (
   `fvalueb` varchar(2048) DEFAULT NULL,
   `freadonly` int(11) DEFAULT NULL,
   `fnote` varchar(2048) DEFAULT NULL,
-  `fcreatetime` datetime NOT NULL,
+  `fcreatetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `fupdatetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`fid`),
   UNIQUE KEY `IParentKey` (`fparentid`,`fkey`)
@@ -44,7 +44,7 @@ CREATE TABLE `tconfig` (
 
 LOCK TABLES `tconfig` WRITE;
 /*!40000 ALTER TABLE `tconfig` DISABLE KEYS */;
-INSERT INTO `tconfig` VALUES (0,NULL,NULL,'KeyList','代碼清單',NULL,1,'FKey for 程式控制.\r\nFValue for 主要語言.\r\nFValueB for 次要語言或匯入語言.','2020-01-17 13:33:03','2020-01-17 13:33:03'),(1000,0,NULL,'Gender','性別',NULL,NULL,'Male 中文為男,\r\nFemale 中文是女.','2020-01-17 13:33:03','2020-01-17 13:33:03'),(1001,1000,10,'M','男','Male',NULL,NULL,'2020-01-17 13:33:03','2020-01-17 13:33:03'),(1002,1000,20,'F','女','Female',NULL,NULL,'2020-01-17 13:33:03','2020-01-17 13:33:03'),(1003,0,NULL,'Marriage','婚姻',NULL,NULL,'婚姻狀態除了單身和已婚以外,\r\n還可以細分為單身未婚、單身已婚.','2020-01-17 13:33:03','2020-01-17 13:33:03'),(1004,1003,10,'Single','單身',NULL,NULL,NULL,'2020-01-17 13:33:03','2020-01-17 13:33:03'),(1005,1003,20,'Married','已婚',NULL,NULL,NULL,'2020-01-17 13:33:03','2020-01-17 13:33:03');
+INSERT INTO `tconfig` VALUES (0,NULL,NULL,'KeyList','代碼清單',NULL,1,'FKey for 程式控制.\r\nFValue for 主要語言.\r\nFValueB for 次要語言或匯入語言.','2020-01-13 11:14:30','2020-01-13 11:14:30'),(1000,0,NULL,'Gender','性別',NULL,NULL,'Male 中文為男,\r\nFemale 中文是女.','2020-01-14 11:14:30','2020-01-14 11:14:30'),(1001,1000,10,'M','男','Male',NULL,NULL,'2020-01-15 11:14:30','2020-01-15 11:14:30'),(1002,1000,20,'F','女','Female',NULL,NULL,'2020-01-16 11:14:30','2020-01-16 11:14:30'),(1003,0,NULL,'Marriage','婚姻',NULL,NULL,'婚姻狀態除了單身和已婚以外,\r\n還可以細分為單身未婚、單身已婚.','2020-01-17 11:14:30','2020-01-17 11:14:30'),(1004,1003,10,'Single','單身',NULL,NULL,NULL,'2020-01-18 11:14:30','2020-01-18 11:14:30'),(1005,1003,20,'Married','已婚',NULL,NULL,NULL,'2020-01-19 11:14:30','2020-01-19 11:14:30');
 /*!40000 ALTER TABLE `tconfig` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -57,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-01-17 13:35:26
+-- Dump completed on 2020-01-16 14:32:48
