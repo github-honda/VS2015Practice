@@ -23,19 +23,19 @@ DROP TABLE IF EXISTS `tconfig`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tconfig` (
-  `fid` int(11) NOT NULL AUTO_INCREMENT,
-  `fparentid` int(11) DEFAULT NULL,
-  `fseqno` int(11) DEFAULT NULL,
-  `fkey` varchar(256) NOT NULL,
-  `fvalue` varchar(2048) DEFAULT NULL,
-  `fvalueb` varchar(2048) DEFAULT NULL,
-  `freadonly` int(11) DEFAULT NULL,
-  `fnote` varchar(2048) DEFAULT NULL,
-  `fcreatetime` datetime NOT NULL,
-  `fupdatetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`fid`),
-  UNIQUE KEY `IParentKey` (`fparentid`,`fkey`)
-) ENGINE=InnoDB AUTO_INCREMENT=1006 DEFAULT CHARSET=utf8;
+  `FID` int(11) NOT NULL,
+  `FParentID` int(11) DEFAULT NULL,
+  `FSeqNo` int(11) DEFAULT NULL,
+  `FKey` varchar(256) NOT NULL,
+  `FValue` varchar(2048) DEFAULT NULL,
+  `FValueB` varchar(2048) DEFAULT NULL,
+  `FReadonly` int(11) DEFAULT NULL,
+  `FNote` varchar(2048) DEFAULT NULL,
+  `FCreateTime` datetime NOT NULL,
+  `FUpdateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`FID`),
+  UNIQUE KEY `IParentKey` (`FParentID`,`FKey`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -57,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-01-17 13:35:26
+-- Dump completed on 2020-01-20 13:55:00
