@@ -8,11 +8,17 @@ namespace ZLib
 {
     public static class ZSystem
     {
-        public static int ZToInt(this object v1, int ValueAsDBNull = -1)
+        public static int ZToInt(this object v1, int ValueAsDBNull = 0)
         {
             if (v1.ZIsNullOrDBNull())
                 return ValueAsDBNull;
             return (int)v1;
+        }
+        public static long ZToLong(this object v1, long ValueAsDBNull = 0)
+        {
+            if (v1.ZIsNullOrDBNull())
+                return ValueAsDBNull;
+            return (long)v1;
         }
         public static Boolean ZIsNullOrDBNull(this object oInput)
         {
