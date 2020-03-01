@@ -12,6 +12,7 @@ http://svc.011.idv.tw/CodeHelper/cs/WindowsService/vs2015/doc/WindowsServiceTemp
 
 
 ## CRUDSamples.sln
+
 ### CRUDSQLServerWinForm.csproj
 WinForm CRUD template for SQL Server.
 http://svc.011.idv.tw/CodeHelper/cs/vs2015/Practice/CRUDSamples/CRUDSQLServerWinForm/doc/Readme.html
@@ -20,3 +21,7 @@ http://svc.011.idv.tw/CodeHelper/cs/vs2015/Practice/CRUDSamples/CRUDSQLServerWin
 ### CRUDMySQLWinForm.csproj
 WinForm CRUD template for MySQL.
 http://svc.011.idv.tw/CodeHelper/cs/vs2015/Practice/CRUDSamples/CRUDMySQLWinForm/doc/Readme.html
+
+### CRUDSQLiteWinForm.csproj
+WinForm CRUD template for SQLite.
+http://svc.011.idv.tw/CodeHelper/cs/vs2015/Practice/CRUDSamples/CRUDSQLiteWinForm/doc/Readme.html
