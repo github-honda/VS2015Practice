@@ -19,9 +19,9 @@ namespace ThreadAndTask
 
             Console.WriteLine("Task.Start() 通知系統啟動工作. 主執行緒不會封鎖(Block), 會立即執行下一個指令.");
             Task task1 = new Task(myAction1); // 建立工作.
-            task1.Start(); 
+            task1.Start();
 
-            Console.WriteLine("子執行緒(5秒)未完成前按鍵, 才會看到'共用資源使用中'.");
+            Console.WriteLine("若提早按鍵, 就會看到處理過程'共用資源使用中'. 因子執行緒/工作需要5秒才能完成.");
             Console.WriteLine("Press any key to continuing...");
             Console.ReadKey();
             Console.WriteLine($"_Resource1={_Resource1}.");

@@ -19,12 +19,14 @@ namespace ThreadAndTask
             Console.WriteLine($"_Resource1={_Resource1}.");
 
             Console.WriteLine("ThreadPool.QueueUserWorkItem() 通知系統啟動子執行緒, 並傳入參數. 主執行緒不會封鎖(Block), 會立即執行下一個指令.");
-            ThreadPool.QueueUserWorkItem(new WaitCallback(myAction1), new State1 { _Value1 = "Init" }); 
+            State1 myPara1 = new State1 { _Value1 = "Init" }; // 參數初始化.
+            ThreadPool.QueueUserWorkItem(new WaitCallback(myAction1), myPara1);
 
-            Console.WriteLine("子執行緒(5秒)未完成前按鍵, 共用的資源結果不同.");
+            Console.WriteLine("若提早按鍵, 就會看到處理過程'共用資源使用中'. 因子執行緒/工作需要5秒才能完成.");
             Console.WriteLine("Press any key to continuing...");
             Console.ReadKey();
-            Console.WriteLine($"_Resource1={_Resource1}.");
+            Console.WriteLine($"_Resource1={_Resource1}.");  // 共用資源結果.
+            Console.WriteLine($"myPara1._Value1={myPara1._Value1}."); // 參數處理結果.
         }
         private void myAction1(object object1)
         {

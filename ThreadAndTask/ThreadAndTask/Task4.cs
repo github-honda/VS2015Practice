@@ -23,13 +23,18 @@ namespace ThreadAndTask
             // (CreationOptions) = TaskCreationOptions.DenyChildAttach.
             // Uses the default task scheduler.
             Console.WriteLine("Task.Run() 通知系統啟動工作, 並傳入參數. 主執行緒不會封鎖(Block), 會立即執行下一個指令.");
-            Task<string>task1 = Task.Run<string>(() => myFunction1(new State1 { _Value1 = "Init" }));
-            _Resource1 = task1.Result;
+            State1 myPara1 = new State1 { _Value1 = "Init" }; // 參數初始化.
+            Task<string>task1 = Task.Run<string>(() => myFunction1(myPara1));
 
             Console.WriteLine("Task.Wait() 封鎖主執行緒, 等候工作結束.");
             task1.Wait();
 
-            Console.WriteLine($"_Resource1={_Resource1}.");
+            Console.WriteLine($"_Resource1={_Resource1}.");  // 共用資源結果.
+            Console.WriteLine($"myPara1._Value1={myPara1._Value1}."); // 參數處理結果.
+
+            // Task 也可以回傳處理結果
+            Console.WriteLine($"task1.Result={task1.Result}."); // Task 處理結果.
+
             Console.WriteLine("Press any key for continuing...");
             Console.ReadKey();
         }

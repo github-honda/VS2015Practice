@@ -20,12 +20,14 @@ namespace ThreadAndTask
             Console.WriteLine("Thread.Start() 通知系統啟動子執行緒. 主執行緒不會封鎖(Block), 會立即執行下一個指令.");
             ParameterizedThreadStart threadDelegate = new ParameterizedThreadStart(myAction1); // 建立包含傳入參數的委派物件.
             Thread thread1 = new Thread(threadDelegate); // 建立執行緒.
-            thread1.Start(new State1 { _Value1 = "Init" }); // 通知系統啟動子執行緒. 主執行緒不會封鎖(Block), 會立即執行下一個指令.
+            State1 myPara1 = new State1 { _Value1 = "Init" }; // 參數初始化.
+            thread1.Start(myPara1); // 通知系統啟動子執行緒. 主執行緒不會封鎖(Block), 會立即執行下一個指令.
 
-            Console.WriteLine("子執行緒(5秒)未完成前按鍵, 才會看到'共用資源使用中'.");
+            Console.WriteLine("若提早按鍵, 就會看到處理過程'共用資源使用中'. 因子執行緒/工作需要5秒才能完成.");
             Console.WriteLine("Press any key to continuing...");
             Console.ReadKey();
-            Console.WriteLine($"_Resource1={_Resource1}.");
+            Console.WriteLine($"_Resource1={_Resource1}.");  // 共用資源結果.
+            Console.WriteLine($"myPara1._Value1={myPara1._Value1}."); // 參數處理結果.
         }
         private void myAction1(object object1)
         {

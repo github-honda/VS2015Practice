@@ -18,13 +18,18 @@ namespace ThreadAndTask
             Console.WriteLine($"_Resource1={_Resource1}.");
 
             Console.WriteLine("Task.Start() 通知系統啟動工作. 主執行緒不會封鎖(Block), 會立即執行下一個指令.");
-            Task task1 = new Task(myAction1, new State1 { _Value1 = "Init" }); // 建立工作並傳入參數.
+            State1 myPara1 = new State1 { _Value1 = "Init" }; // 參數初始化.
+            Task task1 = new Task(myAction1, myPara1); // 建立工作並傳入參數.
             task1.Start();
 
-            Console.WriteLine("子執行緒(5秒)未完成前按鍵, 才會看到'共用資源使用中'.");
+            Console.WriteLine("若提早按鍵, 就會看到處理過程'共用資源使用中'. 因子執行緒/工作需要5秒才能完成.");
             Console.WriteLine("Press any key to continuing...");
             Console.ReadKey();
-            Console.WriteLine($"_Resource1={_Resource1}.");
+            Console.WriteLine($"_Resource1={_Resource1}.");  // 共用資源結果.
+            Console.WriteLine($"myPara1._Value1={myPara1._Value1}."); // 參數處理結果.
+
+            // Task 也可以回傳處理結果, 請參考後面的例子
+            //Console.WriteLine($"task1.Result={task1.Result}."); // Task 處理結果.
         }
         private void myAction1(object object1)
         {

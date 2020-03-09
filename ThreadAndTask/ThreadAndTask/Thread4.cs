@@ -20,11 +20,14 @@ namespace ThreadAndTask
             Console.WriteLine($"_Resource1={_Resource1}.");
 
             Console.WriteLine("BackgroundWorker.RunWorkerAsync() 通知系統啟動子執行緒, 並傳入參數. 主執行緒不會封鎖(Block), 會立即執行下一個指令.");
+            State1 myPara1 = new State1 { _Value1 = "Init" }; // 參數初始化.
             BackgroundWorker bkWorker = new BackgroundWorker(); // 建立背景工作 BackgroundWorker.
             bkWorker.DoWork += new DoWorkEventHandler(myDoWork); // 指定啟動時回呼函數.
             bkWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(myCompleted); // 指定完成時回呼函數.
-            bkWorker.RunWorkerAsync(new State1 { _Value1 = "Init" }); 
+            bkWorker.RunWorkerAsync(myPara1);
 
+            Console.WriteLine($"_Resource1={_Resource1}.");  // 共用資源結果.
+            Console.WriteLine($"myPara1._Value1={myPara1._Value1}."); // 參數處理結果.
             Console.WriteLine("Press any key for continuing...");
             Console.ReadKey();
         }

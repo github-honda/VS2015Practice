@@ -22,7 +22,7 @@ namespace ThreadAndTask
             Thread thread1 = new Thread(threadDelegate); // 建立執行緒.
             thread1.Start();
 
-            Console.WriteLine("子執行緒(5秒)未完成前按鍵, 才會看到'共用資源使用中'.");
+            Console.WriteLine("若提早按鍵, 就會看到處理過程'共用資源使用中'. 因子執行緒/工作需要5秒才能完成.");
             Console.WriteLine("Press any key to continuing...");
             Console.ReadKey(); 
             Console.WriteLine($"_Resource1={_Resource1}.");
