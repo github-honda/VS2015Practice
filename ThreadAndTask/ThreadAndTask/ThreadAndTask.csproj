@@ -51,11 +51,13 @@
     <Compile Include="Task3.cs" />
     <Compile Include="Task4.cs" />
     <Compile Include="Task5.cs" />
+    <Compile Include="Task6.cs" />
     <Compile Include="Thread1.cs" />
     <Compile Include="Thread2.cs" />
     <Compile Include="Thread3.cs" />
     <Compile Include="Thread4.cs" />
     <Compile Include="Thread5.cs" />
+    <Compile Include="Thread6.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
