@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotifyIcon1", "NotifyIcon1\NotifyIcon1.csproj", "{B2028628-FD3D-466E-A48D-B328D7100044}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B2028628-FD3D-466E-A48D-B328D7100044}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2028628-FD3D-466E-A48D-B328D7100044}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2028628-FD3D-466E-A48D-B328D7100044}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2028628-FD3D-466E-A48D-B328D7100044}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
