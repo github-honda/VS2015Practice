@@ -29,3 +29,6 @@ http://svc.011.idv.tw/CodeHelper/cs/vs2015/Practice/CRUDSamples/CRUDSQLiteWinFor
 ## NotifyIcon.sln
 ### NotifyIcon1.csproj
 2020-04-07, Using the NotifyIcon class to display status Running or Stop icons in the notification area.
+
+### NotifyIconFormLess.csproj
+2020-04-08, Create a system tray application in code only and with no forms.
