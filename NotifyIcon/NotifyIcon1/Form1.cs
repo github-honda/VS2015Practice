@@ -47,32 +47,41 @@ namespace NotifyIcon1
             menuExit.Text = "&Exit";
             menuExit.Click += MenuExit_Click;
 
-            Bitmap BitmapRun = new Bitmap(@"Resources\StatusRun_32x.png");
-            Bitmap BitmapStop = new Bitmap(@"Resources\StatusOffline_stop_32x.png");
+            Bitmap BitmapRun = new Bitmap(@"Resources\StatusOK_32x.png");
+            Bitmap BitmapStop = new Bitmap(@"Resources\StatusStop_32x.png");
             IntPtr HIconRun = BitmapRun.GetHicon();
             IntPtr HIconStop = BitmapStop.GetHicon();
             IconRun = Icon.FromHandle(HIconRun);
             IconStop = Icon.FromHandle(HIconStop);
 
-            notifyIcon1.ContextMenu = contextMenu1; // mouse right click.
-            notifyIcon1.Visible = true;
-            notifyIcon1.DoubleClick += NotifyIcon1_DoubleClick;
+            NotifyIcon1.ContextMenu = contextMenu1; // mouse right click.
+            NotifyIcon1.Visible = true;
+            //notifyIcon1.DoubleClick += NotifyIcon1_DoubleClick;
+            NotifyIcon1.MouseClick += NotifyIcon1_MouseClick;
             ShowNotifyStatus();
+        }
+
+        private void NotifyIcon1_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                MessageBox.Show("Please click with mouse right button.");
+            }
         }
 
         void ShowNotifyStatus()
         {
             if (StatusRunning)
             {
-                notifyIcon1.Icon = IconRun;
-                notifyIcon1.Text = "Running";
+                NotifyIcon1.Icon = IconRun;
+                NotifyIcon1.Text = "Running";
                 menuRun.Enabled = false;
                 menuStop.Enabled = true;
             }
             else
             {
-                notifyIcon1.Icon = IconStop;
-                notifyIcon1.Text = "Stop";
+                NotifyIcon1.Icon = IconStop;
+                NotifyIcon1.Text = "Stop";
                 menuRun.Enabled = true;
                 menuStop.Enabled = false;
             }
