@@ -12,49 +12,50 @@ namespace NotifyIcon1
 {
     public partial class Form1 : Form
     {
-        ContextMenu contextMenu1;
-        MenuItem menuRun;
-        MenuItem menuStop;
-        MenuItem menuExit;
-        Boolean StatusRunning;
-        Icon IconRun;
-        Icon IconStop;
+        // 20200410, Follow .NET coding convention naming rules.
+        ContextMenu ContextMenu_;
+        MenuItem MenuRun_;
+        MenuItem MenuStop_;
+        MenuItem MenuExit_;
+        Boolean StatusRunning_;
+        Icon IconRun_;
+        Icon IconStop_;
         public Form1()
         {
             InitializeComponent();
-            contextMenu1 = new ContextMenu();
-            menuExit = new MenuItem();
-            menuRun = new MenuItem();
-            menuStop = new MenuItem();
+            ContextMenu_ = new ContextMenu();
+            MenuExit_ = new MenuItem();
+            MenuRun_ = new MenuItem();
+            MenuStop_ = new MenuItem();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            StatusRunning = true;
+            StatusRunning_ = true;
 
             Text = Application.ProductName + ", " + Application.ProductVersion;
             WindowState = FormWindowState.Minimized;
             ShowInTaskbar = false;
 
-            contextMenu1.MenuItems.AddRange(new MenuItem[] { menuRun, menuStop, menuExit });
-            menuRun.Index = 0;
-            menuRun.Text = "&Run";
-            menuRun.Click += MenuRun_Click;
-            menuStop.Index = 1;
-            menuStop.Text = "&Stop";
-            menuStop.Click += MenuStop_Click;
-            menuExit.Index = 2;
-            menuExit.Text = "&Exit";
-            menuExit.Click += MenuExit_Click;
+            ContextMenu_.MenuItems.AddRange(new MenuItem[] { MenuRun_, MenuStop_, MenuExit_ });
+            MenuRun_.Index = 0;
+            MenuRun_.Text = "&Run";
+            MenuRun_.Click += MenuRun_Click;
+            MenuStop_.Index = 1;
+            MenuStop_.Text = "&Stop";
+            MenuStop_.Click += MenuStop_Click;
+            MenuExit_.Index = 2;
+            MenuExit_.Text = "&Exit";
+            MenuExit_.Click += MenuExit_Click;
 
             Bitmap BitmapRun = new Bitmap(@"Resources\StatusOK_32x.png");
             Bitmap BitmapStop = new Bitmap(@"Resources\StatusStop_32x.png");
             IntPtr HIconRun = BitmapRun.GetHicon();
             IntPtr HIconStop = BitmapStop.GetHicon();
-            IconRun = Icon.FromHandle(HIconRun);
-            IconStop = Icon.FromHandle(HIconStop);
+            IconRun_ = Icon.FromHandle(HIconRun);
+            IconStop_ = Icon.FromHandle(HIconStop);
 
-            NotifyIcon1.ContextMenu = contextMenu1; // mouse right click.
+            NotifyIcon1.ContextMenu = ContextMenu_; // mouse right click.
             NotifyIcon1.Visible = true;
             //notifyIcon1.DoubleClick += NotifyIcon1_DoubleClick;
             NotifyIcon1.MouseClick += NotifyIcon1_MouseClick;
@@ -71,32 +72,32 @@ namespace NotifyIcon1
 
         void ShowNotifyStatus()
         {
-            if (StatusRunning)
+            if (StatusRunning_)
             {
-                NotifyIcon1.Icon = IconRun;
+                NotifyIcon1.Icon = IconRun_;
                 NotifyIcon1.Text = "Running";
-                menuRun.Enabled = false;
-                menuStop.Enabled = true;
+                MenuRun_.Enabled = false;
+                MenuStop_.Enabled = true;
             }
             else
             {
-                NotifyIcon1.Icon = IconStop;
+                NotifyIcon1.Icon = IconStop_;
                 NotifyIcon1.Text = "Stop";
-                menuRun.Enabled = true;
-                menuStop.Enabled = false;
+                MenuRun_.Enabled = true;
+                MenuStop_.Enabled = false;
             }
         }
 
         private void MenuStop_Click(object sender, EventArgs e)
         {
-            StatusRunning = false;
+            StatusRunning_ = false;
             ShowNotifyStatus();
         }
 
 
         private void MenuRun_Click(object sender, EventArgs e)
         {
-            StatusRunning = true;
+            StatusRunning_ = true;
             ShowNotifyStatus();
         }
 

@@ -11,53 +11,54 @@ namespace NotifyIconFormLess
 {
     class CNotifyIcon: IDisposable
     {
-        NotifyIcon NotifyIcon1;
-        Boolean StatusRunning;
-        Icon IconRun;
-        Icon IconStop;
-        ToolStripMenuItem MenuRun;
-        ToolStripMenuItem MenuStop;
+        // 20200410, Follow .NET coding convention naming rules.
+        NotifyIcon NotifyIcon_;
+        Boolean StatusRunning_;
+        Icon IconRun_;
+        Icon IconStop_;
+        ToolStripMenuItem MenuRun_;
+        ToolStripMenuItem MenuStop_;
 
         public CNotifyIcon()
         {
-            ContextMenuStrip contextMenu1;
-            ToolStripMenuItem menuExit;
+            ContextMenuStrip MenuStrip1;
+            ToolStripMenuItem MenuExit;
 
-            contextMenu1 = new ContextMenuStrip();
-            MenuRun = new ToolStripMenuItem();
-            MenuStop = new ToolStripMenuItem();
-            menuExit = new ToolStripMenuItem();
-            NotifyIcon1 = new NotifyIcon();
+            MenuStrip1 = new ContextMenuStrip();
+            MenuRun_ = new ToolStripMenuItem();
+            MenuStop_ = new ToolStripMenuItem();
+            MenuExit = new ToolStripMenuItem();
+            NotifyIcon_ = new NotifyIcon();
 
-            StatusRunning = true;
+            StatusRunning_ = true;
 
-            MenuRun.Text = "&Run";
-            MenuRun.Click += MenuRun_Click;
-            contextMenu1.Items.Add(MenuRun);
+            MenuRun_.Text = "&Run";
+            MenuRun_.Click += MenuRun_Click;
+            MenuStrip1.Items.Add(MenuRun_);
 
-            MenuStop.Text = "&Stop";
-            MenuStop.Click += MenuStop_Click;
-            contextMenu1.Items.Add(MenuStop);
+            MenuStop_.Text = "&Stop";
+            MenuStop_.Click += MenuStop_Click;
+            MenuStrip1.Items.Add(MenuStop_);
 
-            contextMenu1.Items.Add(new ToolStripSeparator());
+            MenuStrip1.Items.Add(new ToolStripSeparator());
 
-            menuExit.Text = "E&xit";
-            menuExit.Click += MenuExit_Click;
-            contextMenu1.Items.Add(menuExit);
+            MenuExit.Text = "E&xit";
+            MenuExit.Click += MenuExit_Click;
+            MenuStrip1.Items.Add(MenuExit);
 
             Bitmap BitmapRun = new Bitmap(@"Resources\StatusOK_32x.png");
             Bitmap BitmapStop = new Bitmap(@"Resources\StatusStop_32x.png");
             IntPtr HIconRun = BitmapRun.GetHicon();
             IntPtr HIconStop = BitmapStop.GetHicon();
-            IconRun = Icon.FromHandle(HIconRun);
-            IconStop = Icon.FromHandle(HIconStop);
+            IconRun_ = Icon.FromHandle(HIconRun);
+            IconStop_ = Icon.FromHandle(HIconStop);
 
-            NotifyIcon1.ContextMenuStrip = contextMenu1; // mouse right click.
-            NotifyIcon1.Visible = true;
+            NotifyIcon_.ContextMenuStrip = MenuStrip1; // mouse right click.
+            NotifyIcon_.Visible = true;
             //NotifyIcon1.DoubleClick += MyNotifyIcon_DoubleClick;
-            NotifyIcon1.MouseClick += MyNotifyIcon_MouseClick;
-            NotifyIcon1.Text = Application.ProductName + ", " + Application.ProductVersion;
-            NotifyIcon1.Visible = true;
+            NotifyIcon_.MouseClick += MyNotifyIcon_MouseClick;
+            NotifyIcon_.Text = Application.ProductName + ", " + Application.ProductVersion;
+            NotifyIcon_.Visible = true;
             ShowNotifyStatus();
         }
 
@@ -74,13 +75,13 @@ namespace NotifyIconFormLess
 
         private void MenuStop_Click(object sender, EventArgs e)
         {
-            StatusRunning = false;
+            StatusRunning_ = false;
             ShowNotifyStatus();
         }
 
         private void MenuRun_Click(object sender, EventArgs e)
         {
-            StatusRunning = true;
+            StatusRunning_ = true;
             ShowNotifyStatus();
         }
 
@@ -93,19 +94,19 @@ namespace NotifyIconFormLess
         }
         void ShowNotifyStatus()
         {
-            if (StatusRunning)
+            if (StatusRunning_)
             {
-                NotifyIcon1.Icon = IconRun;
-                NotifyIcon1.Text = "Running";
-                MenuRun.Enabled = false;
-                MenuStop.Enabled = true;
+                NotifyIcon_.Icon = IconRun_;
+                NotifyIcon_.Text = "Running";
+                MenuRun_.Enabled = false;
+                MenuStop_.Enabled = true;
             }
             else
             {
-                NotifyIcon1.Icon = IconStop;
-                NotifyIcon1.Text = "Stop";
-                MenuRun.Enabled = true;
-                MenuStop.Enabled = false;
+                NotifyIcon_.Icon = IconStop_;
+                NotifyIcon_.Text = "Stop";
+                MenuRun_.Enabled = true;
+                MenuStop_.Enabled = false;
             }
         }
 
@@ -119,8 +120,8 @@ namespace NotifyIconFormLess
             {
                 if (disposing)
                 {
-                    if (NotifyIcon1 != null)
-                        NotifyIcon1.Dispose();
+                    if (NotifyIcon_ != null)
+                        NotifyIcon_.Dispose();
                 }
                 disposedValue = true;
             }
