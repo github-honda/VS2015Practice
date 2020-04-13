@@ -96,18 +96,29 @@ namespace NotifyIconFormLess
         {
             if (StatusRunning_)
             {
-                NotifyIcon_.Icon = IconRun_;
+                ZSetIcon(NotifyIcon_, IconRun_);
                 NotifyIcon_.Text = "Running";
                 MenuRun_.Enabled = false;
                 MenuStop_.Enabled = true;
             }
             else
             {
-                NotifyIcon_.Icon = IconStop_;
+                ZSetIcon(NotifyIcon_, IconStop_);
                 NotifyIcon_.Text = "Stop";
                 MenuRun_.Enabled = true;
                 MenuStop_.Enabled = false;
             }
+        }
+
+        public static void ZSetIcon(NotifyIcon NotifyIcon1, Icon icon1)
+        {
+            // If you want to use the same image in multiple PictureBox controls, create a clone of the image for each PictureBox. 
+            if (NotifyIcon1.Icon != null)
+            {
+                NotifyIcon1.Icon.Dispose();
+                NotifyIcon1.Icon = null;
+            }
+            NotifyIcon1.Icon = icon1;
         }
 
 

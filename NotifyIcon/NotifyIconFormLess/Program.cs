@@ -21,7 +21,7 @@ namespace NotifyIconFormLess
             using (CNotifyIcon notify1 = new CNotifyIcon())
             {
                  // Begins running a standard application message loop on the current thread, without a form.
-                Application.Run();
+                Application.Run(); // 執行完 ApplicationExit 後才會結束本行指令.
             }
         }
     }
